@@ -6,7 +6,7 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 
-class csvReaderTest extends AnyFlatSpec with should.Matchers with BeforeAndAfterAll {
+class CSVParserTest extends AnyFlatSpec with should.Matchers with BeforeAndAfterAll {
   // Create a SparkSession manually
   private val spark: SparkSession = SparkSession.builder()
     .appName("CsvReaderTest")
@@ -29,13 +29,13 @@ class csvReaderTest extends AnyFlatSpec with should.Matchers with BeforeAndAfter
     // Create a DataFrame and write it to a temporary CSV file
     import spark.implicits._
     val df: DataFrame = csvData.toDF("name", "age")
-    val tempDir = java.nio.file.Files.createTempDirectory("csvReaderTest").toString
+    val tempDir = java.nio.file.Files.createTempDirectory("CSVParserTest").toString
     val tempCsvPath = s"$tempDir/test.csv"
     df.write.option("header", "true").csv(tempCsvPath)
 
     // When
-    // Read the CSV file using csvReader
-    val resultDf = csvReader.read(spark, schema, tempCsvPath)
+    // Read the CSV file using CSVParser
+    val resultDf = CSVParser.read(spark, schema, tempCsvPath)
 
     // Collect only the data (excluding headers) and compare
     resultDf.collect() should contain theSameElementsAs df.collect()

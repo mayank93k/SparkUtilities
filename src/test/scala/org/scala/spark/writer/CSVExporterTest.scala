@@ -5,7 +5,7 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class csvWriterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
+class CSVExporterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
 
   private var spark: SparkSession = _
 
@@ -20,14 +20,14 @@ class csvWriterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     spark.stop()
   }
 
-  "csvWriter" should "write DataFrame to CSV without partitioning and no option" in {
+  "CSVExporter" should "write DataFrame to CSV without partitioning and no option" in {
     // Arrange
     val data = Seq(("Alice", 1), ("Bob", 2))
     val df = spark.createDataFrame(data).toDF("name", "id")
     val path = "test-output/no-partition"
 
     // Act
-    csvWriter.write(df, path, SaveMode.Overwrite)
+    CSVExporter.write(df, path, SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.csv(path)
@@ -41,7 +41,7 @@ class csvWriterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val path = "test-output/with-partition"
 
     // Act
-    csvWriter.write(dataFrame = df, path = path, partitionBy = Seq("date"), saveMode = SaveMode.Overwrite)
+    CSVExporter.write(dataFrame = df, path = path, partitionBy = Seq("date"), saveMode = SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.csv(path + "/date=2024-01-01")
@@ -56,7 +56,7 @@ class csvWriterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val options = Map("delimiter" -> ";", "quote" -> "\"", "header" -> "true")
 
     // Act
-    csvWriter.write(dataFrame = df, path = path, option = options, saveMode = SaveMode.Overwrite)
+    CSVExporter.write(dataFrame = df, path = path, option = options, saveMode = SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.option("header", "true").option("delimiter", ";").csv(path)
@@ -71,7 +71,7 @@ class csvWriterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val path = "test-output/default-save-mode"
 
     // Act
-    csvWriter.write(df, path, SaveMode.Overwrite)
+    CSVExporter.write(df, path, SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.csv(path)

@@ -6,7 +6,7 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class jsonReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
+class JSONParserTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
   private var spark: SparkSession = _
 
   override def beforeAll(): Unit = {
@@ -20,17 +20,17 @@ class jsonReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     spark.stop()
   }
 
-  "jsonReader" should "read a JSON file into a DataFrame" in {
+  "JSONParser" should "read a JSON file into a DataFrame" in {
     // Given
     val jsonData = """[{"age": 30, "name": "John Doe"}, {"age": 25, "name": "Jane Doe"}]"""
 
     // Create a temporary directory for the JSON file
-    val tempDir = java.nio.file.Files.createTempDirectory("jsonReaderTest").toString
+    val tempDir = java.nio.file.Files.createTempDirectory("JSONParserTest").toString
     val tempJsonPath = s"$tempDir/test.json"
     java.nio.file.Files.write(java.nio.file.Paths.get(tempJsonPath), jsonData.getBytes)
 
     // When
-    val resultDf = jsonReader.read(spark, tempJsonPath)
+    val resultDf = JSONParser.read(spark, tempJsonPath)
 
     // Define expected schema with the correct types
     val expectedSchema = StructType(Seq(
@@ -56,12 +56,12 @@ class jsonReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val emptyJsonData = "[]"
 
     // Create a temporary directory for the empty JSON file
-    val tempDir = java.nio.file.Files.createTempDirectory("jsonReaderTest").toString
+    val tempDir = java.nio.file.Files.createTempDirectory("JSONParserTest").toString
     val tempJsonPath = s"$tempDir/empty.json"
     java.nio.file.Files.write(java.nio.file.Paths.get(tempJsonPath), emptyJsonData.getBytes)
 
     // When
-    val resultDf = jsonReader.read(spark, tempJsonPath)
+    val resultDf = JSONParser.read(spark, tempJsonPath)
 
     // Then
     resultDf.isEmpty shouldBe true
@@ -72,14 +72,14 @@ class jsonReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val malformedJsonData = """[{"name": "John Doe", "age": 30,}""" // Malformed JSON
 
     // Create a temporary directory for the malformed JSON file
-    val tempDir = java.nio.file.Files.createTempDirectory("jsonReaderTest").toString
+    val tempDir = java.nio.file.Files.createTempDirectory("JSONParserTest").toString
     val tempJsonPath = s"$tempDir/malformed.json"
     java.nio.file.Files.write(java.nio.file.Paths.get(tempJsonPath), malformedJsonData.getBytes)
 
     // When / Then
     val exception = intercept[org.apache.spark.sql.AnalysisException] {
       // Attempt to read the malformed JSON file
-      val df = jsonReader.read(spark, tempJsonPath)
+      val df = JSONParser.read(spark, tempJsonPath)
       // Trigger evaluation of the DataFrame to force Spark to read the JSON
       df.collect() // This action will evaluate the DataFrame
     }
@@ -96,13 +96,13 @@ class jsonReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val jsonData = """[{"age": 30, "name": "John Doe"}, {"age": 25, "name": "Jane Doe"}]"""
 
     // Create a temporary directory for the JSON file
-    val tempDir = java.nio.file.Files.createTempDirectory("jsonReaderTest").toString
+    val tempDir = java.nio.file.Files.createTempDirectory("JSONParserTest").toString
     val tempJsonPath = s"$tempDir/test.json"
     java.nio.file.Files.write(java.nio.file.Paths.get(tempJsonPath), jsonData.getBytes)
 
     // When
     val options = Map("multiline" -> "true")
-    val resultDf = jsonReader.read(spark, options, tempJsonPath)
+    val resultDf = JSONParser.read(spark, options, tempJsonPath)
 
     // Define expected schema
     val expectedSchema = StructType(Seq(

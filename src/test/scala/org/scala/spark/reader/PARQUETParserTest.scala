@@ -6,7 +6,7 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class parquetReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
+class PARQUETParserTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
 
   private var spark: SparkSession = _
 
@@ -21,7 +21,7 @@ class parquetReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll
     spark.stop()
   }
 
-  "parquetReader" should "read a Parquet file into a DataFrame" in {
+  "PARQUETParser" should "read a Parquet file into a DataFrame" in {
     // Given
     val parquetData = Seq(
       Row("John Doe", 30L),
@@ -34,7 +34,7 @@ class parquetReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll
     ))
 
     // Create a temporary directory for the Parquet file
-    val tempDir = java.nio.file.Files.createTempDirectory("parquetReaderTest").toString
+    val tempDir = java.nio.file.Files.createTempDirectory("PARQUETParserTest").toString
     val tempParquetPath = s"$tempDir/test.parquet"
 
     // Create DataFrame and write it as Parquet
@@ -42,7 +42,7 @@ class parquetReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll
     df.write.parquet(tempParquetPath)
 
     // When
-    val resultDf = parquetReader.read(spark, tempParquetPath)
+    val resultDf = PARQUETParser.read(spark, tempParquetPath)
 
     // Then
     resultDf.schema shouldEqual schema
@@ -52,13 +52,13 @@ class parquetReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll
   it should "throw an exception if the Parquet file is malformed" in {
     // Given
     // Create a temporary directory for the malformed Parquet file
-    val tempDir = java.nio.file.Files.createTempDirectory("parquetReaderTest").toString
+    val tempDir = java.nio.file.Files.createTempDirectory("PARQUETParserTest").toString
     val tempParquetPath = s"$tempDir/malformed.parquet"
     // Manually create a malformed Parquet file (you might need a different approach here)
 
     // When / Then
     assertThrows[org.apache.spark.sql.AnalysisException] {
-      parquetReader.read(spark, tempParquetPath)
+      PARQUETParser.read(spark, tempParquetPath)
     }
   }
 }

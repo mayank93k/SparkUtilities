@@ -5,7 +5,7 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class textWriterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
+class TEXTExporterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
 
   private var spark: SparkSession = _
 
@@ -20,14 +20,14 @@ class textWriterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     spark.stop()
   }
 
-  "textWriter" should "write DataFrame to text format without partitioning and no options" in {
+  "TEXTExporter" should "write DataFrame to text format without partitioning and no options" in {
     // Arrange
     val data = Seq("Alice", "Bob")
     val df = spark.createDataFrame(data.map(Tuple1(_))).toDF("value")
     val path = "test-output/text/no-partition"
 
     // Act
-    textWriter.write(df, path, SaveMode.Overwrite)
+    TEXTExporter.write(df, path, SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.text(path)
@@ -42,7 +42,7 @@ class textWriterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val path = "test-output/text/with-partition"
 
     // Act
-    textWriter.write(dataFrame = df, path = path, partitionBy = Seq("date"), saveMode = SaveMode.Overwrite)
+    TEXTExporter.write(dataFrame = df, path = path, partitionBy = Seq("date"), saveMode = SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.text(path + "/date=2024-01-01")
@@ -58,7 +58,7 @@ class textWriterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val options = Map("compression" -> "gzip")
 
     // Act
-    textWriter.write(dataFrame = df, path = path, option = options, saveMode = SaveMode.Overwrite)
+    TEXTExporter.write(dataFrame = df, path = path, option = options, saveMode = SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.text(path)
@@ -72,7 +72,7 @@ class textWriterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val path = "test-output/text/default-save-mode"
 
     // Act
-    textWriter.write(df, path, SaveMode.Overwrite)
+    TEXTExporter.write(df, path, SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.text(path)

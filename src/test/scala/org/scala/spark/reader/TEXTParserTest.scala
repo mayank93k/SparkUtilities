@@ -5,7 +5,7 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class textReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
+class TEXTParserTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
 
   private var spark: SparkSession = _
 
@@ -21,19 +21,19 @@ class textReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     spark.stop()
   }
 
-  "textReader" should "read a text file into a DataFrame" in {
+  "TEXTParser" should "read a text file into a DataFrame" in {
     // Given
     val textData = Seq("John Doe,30", "Jane Doe,25").mkString("\n")
 
     // Create a temporary directory for the text file
-    val tempDir = java.nio.file.Files.createTempDirectory("textReaderTest").toString
+    val tempDir = java.nio.file.Files.createTempDirectory("TEXTParserTest").toString
     val tempTextPath = s"$tempDir/test.txt"
 
     // Write text data to the file
     java.nio.file.Files.write(java.nio.file.Paths.get(tempTextPath), textData.getBytes)
 
     // When
-    val resultDf = textReader.read(spark, tempTextPath)
+    val resultDf = TEXTParser.read(spark, tempTextPath)
 
     // Define expected output
     val expectedRows = Seq(
@@ -48,7 +48,7 @@ class textReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
   it should "handle a malformed text file and check for corrupt records" in {
     // Given
     // Create a temporary directory for the malformed text file
-    val tempDir = java.nio.file.Files.createTempDirectory("textReaderTest").toString
+    val tempDir = java.nio.file.Files.createTempDirectory("TEXTParserTest").toString
     val tempTextPath = s"$tempDir/malformed.txt"
 
     // Write malformed data to the file
@@ -56,7 +56,7 @@ class textReaderTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     java.nio.file.Files.write(java.nio.file.Paths.get(tempTextPath), malformedData.getBytes)
 
     // When
-    val resultDf = textReader.read(spark, tempTextPath)
+    val resultDf = TEXTParser.read(spark, tempTextPath)
 
     // Check the count of rows in the resulting DataFrame
     val totalRecordsCount = resultDf.count()
