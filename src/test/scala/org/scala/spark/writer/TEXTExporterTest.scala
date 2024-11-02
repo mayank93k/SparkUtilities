@@ -58,7 +58,7 @@ class TEXTExporterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll 
     val options = Map("compression" -> "gzip")
 
     // Act
-    TEXTExporter.write(dataFrame = df, path = path, option = options, saveMode = SaveMode.Overwrite)
+    TEXTExporter.write(dataFrame = df, path = path, options = options, saveMode = SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.text(path)

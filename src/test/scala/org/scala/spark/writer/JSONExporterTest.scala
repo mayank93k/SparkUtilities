@@ -56,7 +56,7 @@ class JSONExporterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll 
     val options = Map("compression" -> "gzip")
 
     // Act
-    JSONExporter.write(dataFrame = df, path = path, option = options, saveMode = SaveMode.Overwrite)
+    JSONExporter.write(dataFrame = df, path = path, options = options, saveMode = SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.option("compression", "gzip").json(path)

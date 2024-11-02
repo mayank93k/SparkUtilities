@@ -56,7 +56,7 @@ class CSVExporterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val options = Map("delimiter" -> ";", "quote" -> "\"", "header" -> "true")
 
     // Act
-    CSVExporter.write(dataFrame = df, path = path, option = options, saveMode = SaveMode.Overwrite)
+    CSVExporter.write(dataFrame = df, path = path, options = options, saveMode = SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.option("header", "true").option("delimiter", ";").csv(path)

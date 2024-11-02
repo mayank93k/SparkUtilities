@@ -56,7 +56,7 @@ class PARQUETExporterTest extends AnyFlatSpec with Matchers with BeforeAndAfterA
     val options = Map("compression" -> "gzip")
 
     // Act
-    PARQUETExporter.write(dataFrame = df, path = path, option = options, saveMode = SaveMode.Overwrite)
+    PARQUETExporter.write(dataFrame = df, path = path, options = options, saveMode = SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.parquet(path)

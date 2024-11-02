@@ -56,7 +56,7 @@ class ORCExporterTest extends AnyFlatSpec with Matchers with BeforeAndAfterAll {
     val options = Map("compression" -> "snappy")
 
     // Act
-    ORCExporter.write(dataFrame = df, path = path, option = options, saveMode = SaveMode.Overwrite)
+    ORCExporter.write(dataFrame = df, path = path, options = options, saveMode = SaveMode.Overwrite)
 
     // Assert
     val writtenDf = spark.read.orc(path)
